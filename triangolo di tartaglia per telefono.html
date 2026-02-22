@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sviluppo Binomio Mobile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px; /* Ridotto per mobile */
+            margin: 0;
+        }
+
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 95%; /* Quasi tutta la larghezza su telefono */
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+
+        h1 { color: #2c3e50; font-size: 1.5rem; margin-bottom: 5px; }
+        p { color: #7f8c8d; margin-bottom: 20px; font-size: 0.85rem; }
+        
+        .controls {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input {
+            padding: 12px; /* Più grande per essere cliccato meglio col dito */
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            width: 60px;
+            font-size: 1rem;
+            outline: none;
+            text-align: center;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* Contenitore magico per lo scroll su mobile */
+        .output-container {
+            width: 100%;
+            overflow-x: auto; /* Permette lo scroll orizzontale se il triangolo è largo */
+            margin-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        #output {
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre; 
+            font-size: 1rem; /* Un po' più piccolo per stare nello schermo */
+            color: #34495e;
+            line-height: 1.6;
+            display: inline-block;
+            text-align: left;
+            min-width: 100%; /* Assicura che la centratura funzioni */
+        }
+
+        /* Media query per schermi piccolissimi */
+        @media (max-width: 400px) {
+            #output { font-size: 0.8rem; }
+            h1 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Sviluppo Binomio</h1>
+    <p>Inserisci il grado n per il triangolo</p>
+    
+    <div class="controls">
+        <input type="number" id="gradoN" placeholder="n" min="0" max="15">
+        <button onclick="calcola()">Genera</button>
+    </div>
+
+    <div class="output-container">
+        <div id="output"></div>
+    </div>
+</div>
+
+<script>
+    function calcola() {
+        const inputVal = document.getElementById('gradoN').value;
+        const outputDiv = document.getElementById('output');
+
+        if (inputVal === "") {
+            outputDiv.innerText = "Inserisci un numero.";
+            return;
+        }
+
+        const n = parseInt(inputVal);
+        const m = n + 1;
+        let risultatoTesto = "";
+
+        let tartaglia = Array.from({ length: m }, () => Array(m).fill(0));
+
+        for (let i = 0; i < m; i++) {
+            tartaglia[i][0] = 1;
+            tartaglia[i][i] = 1;
+            for (let j = 1; j < i; j++) {
+                tartaglia[i][j] = tartaglia[i - 1][j - 1] + tartaglia[i - 1][j];
+            }
+        }
+
+        for (let i = 0; i < m; i++) {
+            let spaziIniziali = "";
+            for (let s = 0; s < m - i; s++) {
+                spaziIniziali += "  "; 
+            }
+            risultatoTesto += spaziIniziali;
+
+            for (let j = 0; j <= i; j++) {
+                let val = tartaglia[i][j].toString();
+                let gap = val.length >= 2 ? "  " : "   ";
+                risultatoTesto += val + gap;
+            }
+            risultatoTesto += "\n";
+        }
+
+        outputDiv.innerText = risultatoTesto;
+    }
+</script>
+
+</body>
+</html>
